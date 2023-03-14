@@ -1,0 +1,536 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#FFF">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="icon" type="image/ico" sizes="32x32" href="/images/favicon.ico">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+<link rel="alternate" type="application/rss+xml" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/rss.xml" />
+<link rel="alternate" type="application/atom+xml" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/atom.xml" />
+<link rel="alternate" type="application/json" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/feed.json" />
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Mulish:300,300italic,400,400italic,700,700italic%7CFredericka%20the%20Great:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20JP:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20SC:300,300italic,400,400italic,700,700italic%7CInconsolata:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/css/app.css?v=0.2.5">
+
+  
+  <meta name="keywords" content="数组,JAVA,贪心" />
+
+
+<link rel="canonical" href="https://zlz-cn.github.io/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/">
+
+
+
+  <title>
+赢得比赛需要的最少训练时长 - LeetCode每日一题 |
+ZZZ(●'◡'●)ZZZ = WeaklingCoder's Blog</title>
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div id="loading">
+    <div class="cat">
+      <div class="body"></div>
+      <div class="head">
+        <div class="face"></div>
+      </div>
+      <div class="foot">
+        <div class="tummy-end"></div>
+        <div class="bottom"></div>
+        <div class="legs left"></div>
+        <div class="legs right"></div>
+      </div>
+      <div class="paw">
+        <div class="hands left"></div>
+        <div class="hands right"></div>
+      </div>
+    </div>
+  </div>
+  <div id="container">
+    <header id="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="inner">
+        <div id="brand">
+          <div class="pjax">
+          
+  <h1 itemprop="name headline">赢得比赛需要的最少训练时长
+  </h1>
+  
+<div class="meta">
+  <span class="item" title="创建时间：2023-03-13 10:35:02">
+    <span class="icon">
+      <i class="ic i-calendar"></i>
+    </span>
+    <span class="text">发表于</span>
+    <time itemprop="dateCreated datePublished" datetime="2023-03-13T10:35:02+08:00">2023-03-13</time>
+  </span>
+  <span class="item" title="本文字数">
+    <span class="icon">
+      <i class="ic i-pen"></i>
+    </span>
+    <span class="text">本文字数</span>
+    <span>2k</span>
+    <span class="text">字</span>
+  </span>
+  <span class="item" title="阅读时长">
+    <span class="icon">
+      <i class="ic i-clock"></i>
+    </span>
+    <span class="text">阅读时长</span>
+    <span>2 分钟</span>
+  </span>
+</div>
+
+
+          </div>
+        </div>
+        <nav id="nav">
+  <div class="inner">
+    <div class="toggle">
+      <div class="lines" aria-label="切换导航栏">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+    <ul class="menu">
+      <li class="item title"><a href="/" rel="start">ZZZ(●'◡'●)ZZZ</a></li>
+    </ul>
+    <ul class="right">
+      <li class="item theme">
+        <i class="ic i-sun"></i>
+      </li>
+      <li class="item search">
+        <i class="ic i-search"></i>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+      </div>
+      <div id="imgs" class="pjax">
+        <ul>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?497357"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?638724"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?232292"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?516207"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?233356"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?425144"></li>
+        </ul>
+      </div>
+    </header>
+    <div id="waves">
+      <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+          <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+          <use xlink:href="#gentle-wave" x="48" y="0" />
+          <use xlink:href="#gentle-wave" x="48" y="3" />
+          <use xlink:href="#gentle-wave" x="48" y="5" />
+          <use xlink:href="#gentle-wave" x="48" y="7" />
+        </g>
+      </svg>
+    </div>
+    <main>
+      <div class="inner">
+        <div id="main" class="pjax">
+          
+  <div class="article wrap">
+    
+<div class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+<i class="ic i-home"></i>
+<span><a href="/">首页</a></span><i class="ic i-angle-right"></i>
+<span  class="current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" itemprop="item" rel="index" title="分类于 LeetCode每日一题"><span itemprop="name">LeetCode每日一题</span></a>
+<meta itemprop="position" content="1" /></span>
+</div>
+
+    <article itemscope itemtype="http://schema.org/Article" class="post block" lang="zh-CN">
+  <link itemprop="mainEntityOfPage" href="https://zlz-cn.github.io/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/">
+
+  <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="image" content="/images/avatar.jpg">
+    <meta itemprop="name" content="zlz-cn">
+    <meta itemprop="description" content=", ">
+  </span>
+
+  <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="WeaklingCoder's Blog">
+  </span>
+
+  <div class="body md" itemprop="articleBody">
+    
+
+    <div class="note info">
+<p>来自 LeetCode 每日一题，<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jbi9wcm9ibGVtcy9taW5pbXVtLWhvdXJzLW9mLXRyYWluaW5nLXRvLXdpbi1hLWNvbXBldGl0aW9uLw==">赢得比赛需要的最少训练时长</span>  ——2023-03-13<br />
+ 难度：<span class="label success">简单</span></p>
+</div>
+<h1 id="每日一题"><a class="anchor" href="#每日一题">#</a> 每日一题</h1>
+<h2 id="题目"><a class="anchor" href="#题目">#</a> 题目</h2>
+<p>你正在参加一场比赛，给你两个 <span class="red">正</span> 整数 <span class="red">initialEnergy</span> 和 <span class="red">initialExperience</span> 分别表示你的初始精力和初始经验。</p>
+<p>另给你两个下标从 <span class="red">0</span> 开始的整数数组 <span class="red">energy</span> 和 <span class="red">experience</span>，长度均为 <span class="red">n</span> 。</p>
+<p>你将会 依次 对上 <span class="red">n</span> 个对手。第 i 个对手的精力和经验分别用 energy [i] 和 experience [i] 表示。当你对上对手时，需要在经验和精力上都 <span class="label danger">严格</span> 超过对手才能击败他们，然后在可能的情况下继续对上下一个对手。</p>
+<p>击败第 <span class="red">i</span> 个对手会使你的经验 增加 <span class="red">experience[i]</span>，但会将你的精力 减少 <span class="red">energy[i]</span> 。</p>
+<p>在开始比赛前，你可以训练几个小时。每训练一个小时，你可以选择将增加经验增加 <span class="red">1</span> 或者 将精力增加 <span class="red">1</span> 。</p>
+<p>返回击败全部 <span class="red">n</span> 个对手需要训练的 <span class="red">最少</span> 小时数目。</p>
+<pre><code>示例 1：
+
+输入：initialEnergy = 5, initialExperience = 3, energy = [1,4,3,2], experience = [2,6,3,1]
+输出：8
+解释：在 6 小时训练后，你可以将精力提高到 11 ，并且再训练 2 个小时将经验提高到 5 。
+按以下顺序与对手比赛：
+- 你的精力与经验都超过第 0 个对手，所以获胜。
+精力变为：11 - 1 = 10 ，经验变为：5 + 2 = 7 。
+- 你的精力与经验都超过第 1 个对手，所以获胜。
+精力变为：10 - 4 = 6 ，经验变为：7 + 6 = 13 。
+- 你的精力与经验都超过第 2 个对手，所以获胜。
+精力变为：6 - 3 = 3 ，经验变为：13 + 3 = 16 。
+- 你的精力与经验都超过第 3 个对手，所以获胜。
+精力变为：3 - 2 = 1 ，经验变为：16 + 1 = 17 。
+在比赛前进行了 8 小时训练，所以返回 8 。
+可以证明不存在更小的答案。
+</code></pre>
+<h2 id="分析"><a class="anchor" href="#分析">#</a> 分析</h2>
+<pre><code>可以采用最简单的办法，穷举所有可能会发生的情况，根据不同情况进行判断即可。
+</code></pre>
+<div class="note warning">
+<p>值得提醒的是：需要在经验和精力上都 严格 超过对手才能击败他们，意味着条件是<span class="red"> &gt;</span> 而不能是大于<span class="red"> &gt;=</span>。</p>
+</div>
+<h2 id="代码"><a class="anchor" href="#代码">#</a> 代码</h2>
+<figure class="highlight java"><figcaption data-lang="java"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="2"></td><td><pre>    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">minNumberOfHours</span><span class="token punctuation">(</span><span class="token keyword">int</span> initialEnergy<span class="token punctuation">,</span> <span class="token keyword">int</span> initialExperience<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> energy<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> experience<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="3"></td><td><pre>        <span class="token keyword">int</span> reuslt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="4"></td><td><pre>        <span class="token keyword">int</span> len <span class="token operator">=</span> energy<span class="token punctuation">.</span>length<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="5"></td><td><pre>        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="6"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>initialEnergy <span class="token operator">></span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> initialExperience <span class="token operator">></span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="7"></td><td><pre>                initialEnergy <span class="token operator">=</span> initialEnergy <span class="token operator">-</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="8"></td><td><pre>                initialExperience <span class="token operator">=</span> initialExperience <span class="token operator">+</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="9"></td><td><pre>                <span class="token keyword">continue</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="10"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="11"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>initialEnergy <span class="token operator">&lt;=</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> initialExperience <span class="token operator">></span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="12"></td><td><pre>                <span class="token keyword">int</span> need <span class="token operator">=</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> initialEnergy <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="13"></td><td><pre>                reuslt <span class="token operator">=</span> reuslt <span class="token operator">+</span> need<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="14"></td><td><pre>                initialEnergy <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="15"></td><td><pre>                initialExperience <span class="token operator">=</span> initialExperience <span class="token operator">+</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="16"></td><td><pre>                <span class="token keyword">continue</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="17"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="18"></td><td><pre></pre></td></tr><tr><td data-num="19"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>initialEnergy <span class="token operator">></span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> initialExperience <span class="token operator">&lt;=</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="20"></td><td><pre>                <span class="token keyword">int</span> need <span class="token operator">=</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> initialExperience <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="21"></td><td><pre>                reuslt <span class="token operator">=</span> reuslt <span class="token operator">+</span> need<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="22"></td><td><pre>                initialEnergy <span class="token operator">=</span> initialEnergy <span class="token operator">-</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="23"></td><td><pre>                initialExperience <span class="token operator">=</span> initialExperience <span class="token operator">+</span> need <span class="token operator">+</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="24"></td><td><pre>                <span class="token keyword">continue</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="25"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="26"></td><td><pre></pre></td></tr><tr><td data-num="27"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>initialEnergy <span class="token operator">&lt;=</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> initialExperience <span class="token operator">&lt;=</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="28"></td><td><pre>                <span class="token keyword">int</span> needEn <span class="token operator">=</span> energy<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> initialEnergy <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="29"></td><td><pre>                <span class="token keyword">int</span> needEx <span class="token operator">=</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> initialExperience <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="30"></td><td><pre>                reuslt <span class="token operator">=</span> reuslt <span class="token operator">+</span> needEx <span class="token operator">+</span> needEn<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="31"></td><td><pre>                initialEnergy <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="32"></td><td><pre>                initialExperience <span class="token operator">=</span> initialExperience <span class="token operator">+</span> needEx <span class="token operator">+</span> experience<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="33"></td><td><pre>                <span class="token keyword">continue</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="34"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="35"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="36"></td><td><pre>        <span class="token keyword">return</span> reuslt<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="37"></td><td><pre>    <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="38"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><div class="note success">
+<p>解答成功:<br />
+ 执行耗时：0 ms, 击败了 100.00% 的 Java 用户<br />
+内存消耗：40.9 MB, 击败了 52.69% 的 Java 用户</p>
+</div>
+
+      <div class="tags">
+          <a href="/tags/%E6%95%B0%E7%BB%84/" rel="tag"><i class="ic i-tag"></i> 数组</a>
+          <a href="/tags/JAVA/" rel="tag"><i class="ic i-tag"></i> JAVA</a>
+          <a href="/tags/%E8%B4%AA%E5%BF%83/" rel="tag"><i class="ic i-tag"></i> 贪心</a>
+      </div>
+  </div>
+
+   <footer>
+
+    <div class="meta">
+  <span class="item">
+    <span class="icon">
+      <i class="ic i-calendar-check"></i>
+    </span>
+    <span class="text">更新于</span>
+    <time title="修改时间：2023-03-14 14:41:26" itemprop="dateModified" datetime="2023-03-14T14:41:26+08:00">2023-03-14</time>
+  </span>
+  <span id="LeetCode每日一题/赢得比赛需要的最少训练时长/" class="item leancloud_visitors" data-flag-title="赢得比赛需要的最少训练时长" title="阅读次数">
+      <span class="icon">
+        <i class="ic i-eye"></i>
+      </span>
+      <span class="text">阅读次数</span>
+      <span class="leancloud-visitors-count"></span>
+      <span class="text">次</span>
+  </span>
+</div>
+
+      
+<div class="reward">
+  <button><i class="ic i-heartbeat"></i> 赞赏</button>
+  <p>请我喝[茶]~(￣▽￣)~*</p>
+  <div id="qr">
+      
+      <div>
+        <img data-src="/images/wechatpay.png" alt="zlz-cn 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div>
+        <img data-src="/images/alipay.png" alt="zlz-cn 支付宝">
+        <p>支付宝</p>
+      </div>
+  </div>
+</div>
+
+      
+
+<div id="copyright">
+<ul>
+  <li class="author">
+    <strong>本文作者： </strong>zlz-cn <i class="ic i-at"><em>@</em></i>WeaklingCoder's Blog
+  </li>
+  <li class="link">
+    <strong>本文链接：</strong>
+    <a href="https://zlz-cn.github.io/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/" title="赢得比赛需要的最少训练时长">https://zlz-cn.github.io/LeetCode每日一题/赢得比赛需要的最少训练时长/</a>
+  </li>
+  <li class="license">
+    <strong>版权声明： </strong>本站所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="ic i-creative-commons"><em>(CC)</em></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+  </footer>
+
+</article>
+
+  </div>
+  
+
+<div class="post-nav">
+    <div class="item left">
+      
+
+  <a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E5%AD%97%E6%AF%8D%E4%B8%8E%E6%95%B0%E5%AD%97/" itemprop="url" rel="prev" data-background-image="https:&#x2F;&#x2F;tuapi.eees.cc&#x2F;api.php?category&#x3D;dongman&amp;type&#x3D;302&amp;?754052" title="字母与数字">
+  <span class="type">上一篇</span>
+  <span class="category"><i class="ic i-flag"></i> LeetCode每日一题</span>
+  <h3>字母与数字</h3>
+  </a>
+
+    </div>
+    <div class="item right">
+      
+
+  <a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" itemprop="url" rel="next" data-background-image="https:&#x2F;&#x2F;tuapi.eees.cc&#x2F;api.php?category&#x3D;dongman&amp;type&#x3D;302&amp;?812951" title="给定行和列的和求可行矩阵">
+  <span class="type">下一篇</span>
+  <span class="category"><i class="ic i-flag"></i> LeetCode每日一题</span>
+  <h3>给定行和列的和求可行矩阵</h3>
+  </a>
+
+    </div>
+</div>
+
+  
+  <div class="wrap" id="comments"></div>
+
+
+        </div>
+        <div id="sidebar">
+          
+
+<div class="inner">
+
+  <div class="panels">
+    <div class="inner">
+      <div class="contents panel pjax" data-title="文章目录">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text"> 每日一题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE"><span class="toc-number">1.1.</span> <span class="toc-text"> 题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text"> 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">1.3.</span> <span class="toc-text"> 代码</span></a></li></ol></li></ol>
+      </div>
+      <div class="related panel pjax" data-title="系列文章">
+        <ul>
+          <li><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E5%AD%97%E6%AF%8D%E4%B8%8E%E6%95%B0%E5%AD%97/" rel="bookmark" title="字母与数字">字母与数字</a></li><li class="active"><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/" rel="bookmark" title="赢得比赛需要的最少训练时长">赢得比赛需要的最少训练时长</a></li><li><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" rel="bookmark" title="给定行和列的和求可行矩阵">给定行和列的和求可行矩阵</a></li>
+        </ul>
+      </div>
+      <div class="overview panel" data-title="站点概览">
+        <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="image" itemprop="image" alt="zlz-cn"
+      data-src="/images/avatar.jpg">
+  <p class="name" itemprop="name">zlz-cn</p>
+  <div class="description" itemprop="description"></div>
+</div>
+
+<nav class="state">
+    <div class="item posts">
+      <a href="/archives/">
+        <span class="count">4</span>
+        <span class="name">文章</span>
+      </a>
+    </div>
+    <div class="item categories">
+      <a href="/categories/">
+        <span class="count">1</span>
+        <span class="name">分类</span>
+      </a>
+    </div>
+    <div class="item tags">
+      <a href="/tags/">
+        <span class="count">8</span>
+        <span class="name">标签</span>
+      </a>
+    </div>
+</nav>
+
+<div class="social">
+      <span class="exturl item github" data-url="aHR0cHM6Ly9naXRodWIuY29tL3psei1jbg==" title="https:&#x2F;&#x2F;github.com&#x2F;zlz-cn"><i class="ic i-github"></i></span>
+      <span class="exturl item email" data-url="bWFpbHRvOnpoYW5nbGlhbnpodWFuZ0BvdXRsb29rLmNvbQ==" title="mailto:zhanglianzhuang@outlook.com"><i class="ic i-envelope"></i></span>
+</div>
+
+<ul class="menu">
+  
+    
+  <li class="item">
+    <a href="/" rel="section"><i class="ic i-home"></i>首页</a>
+  </li>
+
+    
+  <li class="item">
+    <a href="/about/" rel="section"><i class="ic i-user"></i>关于</a>
+  </li>
+
+        
+  <li class="item dropdown">
+      <a href="javascript:void(0);"><i class="ic i-feather"></i>文章</a>
+    <ul class="submenu">
+
+        
+  <li class="item">
+    <a href="/archives/" rel="section"><i class="ic i-list-alt"></i>归档</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/categories/" rel="section"><i class="ic i-th"></i>分类</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/tags/" rel="section"><i class="ic i-tags"></i>标签</a>
+  </li>
+
+  </ul>
+
+</ul>
+
+      </div>
+    </div>
+  </div>
+
+  <ul id="quick">
+    <li class="prev pjax">
+        <a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E5%AD%97%E6%AF%8D%E4%B8%8E%E6%95%B0%E5%AD%97/" rel="prev" title="上一篇"><i class="ic i-chevron-left"></i></a>
+    </li>
+    <li class="up"><i class="ic i-arrow-up"></i></li>
+    <li class="down"><i class="ic i-arrow-down"></i></li>
+    <li class="next pjax">
+        <a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" rel="next" title="下一篇"><i class="ic i-chevron-right"></i></a>
+    </li>
+    <li class="percent"></li>
+  </ul>
+</div>
+
+
+        </div>
+        <div class="dimmer"></div>
+      </div>
+    </main>
+    <footer id="footer">
+      <div class="inner">
+        <div class="widgets">
+          
+<div class="rpost pjax">
+  <h2>随机文章</h2>
+  <ul>
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/" title="赢得比赛需要的最少训练时长">赢得比赛需要的最少训练时长</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" title="给定行和列的和求可行矩阵">给定行和列的和求可行矩阵</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+</div>
+
+    <span><a href="/hello-world/" title="Hello World">Hello World</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E5%AD%97%E6%AF%8D%E4%B8%8E%E6%95%B0%E5%AD%97/" title="字母与数字">字母与数字</a></span>
+  </li>
+
+  </ul>
+</div>
+<div>
+  <h2>最新评论</h2>
+  <ul class="leancloud-recent-comment"></ul>
+</div>
+
+        </div>
+        <div class="status">
+  <div class="copyright">
+    
+    &copy; 2010 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="ic i-sakura rotate"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">zlz-cn @ ZZZ(●'◡'●)ZZZ</span>
+  </div>
+  <div class="count">
+    <span class="post-meta-item-icon">
+      <i class="ic i-chart-area"></i>
+    </span>
+    <span title="站点总字数">5k 字</span>
+
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="ic i-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5 分钟</span>
+  </div>
+  <div class="powered-by">
+    基于 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & Theme.<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FtZWhpbWUvaGV4by10aGVtZS1zaG9rYQ==">Shoka</span>
+  </div>
+</div>
+
+      </div>
+    </footer>
+  </div>
+<script data-config type="text/javascript">
+  var LOCAL = {
+    path: 'LeetCode每日一题/赢得比赛需要的最少训练时长/',
+    favicon: {
+      show: "WeaklingCoder's Blog",
+      hide: "WeaklingCoder's Blog"
+    },
+    search : {
+      placeholder: "文章搜索",
+      empty: "关于 「 ${query} 」，什么也没搜到",
+      stats: "${time} ms 内找到 ${hits} 条结果"
+    },
+    valine: {"placeholder":"欢迎讨论💪"},fancybox: true,
+    copyright: '复制成功，转载请遵守 <i class="ic i-creative-commons"></i>BY-NC-SA 协议。',
+    ignores : [
+      function(uri) {
+        return uri.includes('#');
+      },
+      function(uri) {
+        return new RegExp(LOCAL.path+"$").test(uri);
+      }
+    ]
+  };
+</script>
+
+<script src="https://cdn.polyfill.io/v2/polyfill.js"></script>
+
+<script src="//cdn.jsdelivr.net/combine/npm/pace-js@1.0.2/pace.min.js,npm/pjax@0.2.8/pjax.min.js,npm/whatwg-fetch@3.4.0/dist/fetch.umd.min.js,npm/animejs@3.2.0/lib/anime.min.js,npm/algoliasearch@4/dist/algoliasearch-lite.umd.js,npm/instantsearch.js@4/dist/instantsearch.production.min.js,npm/lozad@1/dist/lozad.min.js,npm/quicklink@2/dist/quicklink.umd.js"></script>
+
+<script src="/js/app.js?v=0.2.5"></script>
+
+
+
+
+</body>
+</html>
