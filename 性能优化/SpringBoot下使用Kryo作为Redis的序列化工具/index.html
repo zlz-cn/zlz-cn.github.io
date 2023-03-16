@@ -1,0 +1,546 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#FFF">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="icon" type="image/ico" sizes="32x32" href="/images/favicon.ico">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+<link rel="alternate" type="application/rss+xml" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/rss.xml" />
+<link rel="alternate" type="application/atom+xml" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/atom.xml" />
+<link rel="alternate" type="application/json" title="WeaklingCoder's Blog" href="https://zlz-cn.github.io/feed.json" />
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Mulish:300,300italic,400,400italic,700,700italic%7CFredericka%20the%20Great:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20JP:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20SC:300,300italic,400,400italic,700,700italic%7CInconsolata:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/css/app.css?v=0.2.5">
+
+  
+  <meta name="keywords" content="JAVA,Kryo,Redis,Cache,Spring Boot,Serializer,bigkey" />
+
+
+<link rel="canonical" href="https://zlz-cn.github.io/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/SpringBoot%E4%B8%8B%E4%BD%BF%E7%94%A8Kryo%E4%BD%9C%E4%B8%BARedis%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/">
+
+
+
+  <title>
+SpringBoot下使用Kryo作为Redis的序列化工具 - 性能优化 |
+ZZZ(●'◡'●)ZZZ = WeaklingCoder's Blog</title>
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div id="loading">
+    <div class="cat">
+      <div class="body"></div>
+      <div class="head">
+        <div class="face"></div>
+      </div>
+      <div class="foot">
+        <div class="tummy-end"></div>
+        <div class="bottom"></div>
+        <div class="legs left"></div>
+        <div class="legs right"></div>
+      </div>
+      <div class="paw">
+        <div class="hands left"></div>
+        <div class="hands right"></div>
+      </div>
+    </div>
+  </div>
+  <div id="container">
+    <header id="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="inner">
+        <div id="brand">
+          <div class="pjax">
+          
+  <h1 itemprop="name headline">SpringBoot下使用Kryo作为Redis的序列化工具
+  </h1>
+  
+<div class="meta">
+  <span class="item" title="创建时间：2023-03-16 14:17:05">
+    <span class="icon">
+      <i class="ic i-calendar"></i>
+    </span>
+    <span class="text">发表于</span>
+    <time itemprop="dateCreated datePublished" datetime="2023-03-16T14:17:05+08:00">2023-03-16</time>
+  </span>
+  <span class="item" title="本文字数">
+    <span class="icon">
+      <i class="ic i-pen"></i>
+    </span>
+    <span class="text">本文字数</span>
+    <span>4.3k</span>
+    <span class="text">字</span>
+  </span>
+  <span class="item" title="阅读时长">
+    <span class="icon">
+      <i class="ic i-clock"></i>
+    </span>
+    <span class="text">阅读时长</span>
+    <span>4 分钟</span>
+  </span>
+</div>
+
+
+          </div>
+        </div>
+        <nav id="nav">
+  <div class="inner">
+    <div class="toggle">
+      <div class="lines" aria-label="切换导航栏">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+    <ul class="menu">
+      <li class="item title"><a href="/" rel="start">ZZZ(●'◡'●)ZZZ</a></li>
+    </ul>
+    <ul class="right">
+      <li class="item theme">
+        <i class="ic i-sun"></i>
+      </li>
+      <li class="item search">
+        <i class="ic i-search"></i>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+      </div>
+      <div id="imgs" class="pjax">
+        <ul>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?824591"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?694251"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?760164"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?160701"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?631445"></li>
+          <li class="item" data-background-image="https://tuapi.eees.cc/api.php?category=dongman&type=302&?829689"></li>
+        </ul>
+      </div>
+    </header>
+    <div id="waves">
+      <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+          <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+          <use xlink:href="#gentle-wave" x="48" y="0" />
+          <use xlink:href="#gentle-wave" x="48" y="3" />
+          <use xlink:href="#gentle-wave" x="48" y="5" />
+          <use xlink:href="#gentle-wave" x="48" y="7" />
+        </g>
+      </svg>
+    </div>
+    <main>
+      <div class="inner">
+        <div id="main" class="pjax">
+          
+  <div class="article wrap">
+    
+<div class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+<i class="ic i-home"></i>
+<span><a href="/">首页</a></span><i class="ic i-angle-right"></i>
+<span  class="current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" itemprop="item" rel="index" title="分类于 性能优化"><span itemprop="name">性能优化</span></a>
+<meta itemprop="position" content="1" /></span>
+</div>
+
+    <article itemscope itemtype="http://schema.org/Article" class="post block" lang="zh-CN">
+  <link itemprop="mainEntityOfPage" href="https://zlz-cn.github.io/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/SpringBoot%E4%B8%8B%E4%BD%BF%E7%94%A8Kryo%E4%BD%9C%E4%B8%BARedis%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/">
+
+  <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="image" content="/images/avatar.jpg">
+    <meta itemprop="name" content="zlz-cn">
+    <meta itemprop="description" content=", 一个火鸡程序员的博客">
+  </span>
+
+  <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="WeaklingCoder's Blog">
+  </span>
+
+  <div class="body md" itemprop="articleBody">
+    
+
+    <p>最近开发工作中遇到了 Redis 的 bigkey 问题，单个 value 值大小超过 30MB，value 为 list 类型，list 中对象数量超过十万个，每次读取这个 key 并反序列化<br />
+到内存中耗时超过 4 秒，遂学习了如下解决思路</p>
+<h2 id="环境信息"><a class="anchor" href="#环境信息">#</a> 环境信息</h2>
+<ul>
+<li>SpringBoot 2.6.11</li>
+<li>kryo 5.4.0</li>
+<li>redis 7.0.9 单机部署</li>
+<li>使用 Jackson2RedisSerializer 作为缓存到 Redis 的序列化器</li>
+</ul>
+<h2 id="减少value大小"><a class="anchor" href="#减少value大小">#</a> 减少 value 大小</h2>
+<div class="note warning">
+<p>首先应该先从业务角度考虑是否有必要缓存这么大的 key，是否可以从业务角度先减小缓存范围，确定需要的话再考虑从代码层面优化。</p>
+</div>
+<h3 id="使用gzip等压缩工具直接对value值进行压缩"><a class="anchor" href="#使用gzip等压缩工具直接对value值进行压缩">#</a> 使用 GZIP 等压缩工具直接对 value 值进行压缩</h3>
+<p>value 的序列化，我们使用的是 jackson2 来做的，反序列化的时候直接就是对象，方便配合 Spring Cache 使用。核心代码如下：</p>
+<figure class="highlight java"><figcaption data-lang="java"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token keyword">private</span> <span class="token class-name">RedisSerializer</span> <span class="token function">getValueSerializer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="2"></td><td><pre>    <span class="token class-name">Jackson2JsonRedisSerializer</span> jackson2JsonRedisSerializer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Jackson2JsonRedisSerializer</span><span class="token punctuation">(</span><span class="token class-name">Object</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="3"></td><td><pre>    <span class="token class-name">ObjectMapper</span> om <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ObjectMapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="4"></td><td><pre>    om<span class="token punctuation">.</span><span class="token function">setVisibility</span><span class="token punctuation">(</span><span class="token class-name">PropertyAccessor</span><span class="token punctuation">.</span><span class="token constant">ALL</span><span class="token punctuation">,</span> <span class="token class-name">JsonAutoDetect<span class="token punctuation">.</span>Visibility</span><span class="token punctuation">.</span><span class="token constant">ANY</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="5"></td><td><pre>    om<span class="token punctuation">.</span><span class="token function">enableDefaultTyping</span><span class="token punctuation">(</span><span class="token class-name">ObjectMapper<span class="token punctuation">.</span>DefaultTyping</span><span class="token punctuation">.</span><span class="token constant">NON_FINAL</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="6"></td><td><pre>    jackson2JsonRedisSerializer<span class="token punctuation">.</span><span class="token function">setObjectMapper</span><span class="token punctuation">(</span>om<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="7"></td><td><pre>    <span class="token keyword">return</span> jackson2JsonRedisSerializer<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="8"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>Redis 中存储的就是 Jackson 序列化之后 Json 格式的字符串，包含 class 等相关信息。<br />
+可以直接使用 JDK 自带的 GZIP 压缩来实现：</p>
+<figure class="highlight java"><figcaption data-lang="java"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">GzipSerializer</span> <span class="token keyword">implements</span> <span class="token class-name">RedisSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="2"></td><td><pre></pre></td></tr><tr><td data-num="3"></td><td><pre>    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token constant">BUFFER_SIZE</span> <span class="token operator">=</span> <span class="token number">4096</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="4"></td><td><pre>    <span class="token comment">// 这里组合方式，使用到了一个序列化器</span></pre></td></tr><tr><td data-num="5"></td><td><pre>    <span class="token keyword">private</span> <span class="token class-name">RedisSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> innerSerializer<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="6"></td><td><pre></pre></td></tr><tr><td data-num="7"></td><td><pre>        <span class="token keyword">public</span> <span class="token class-name">GzipSerializer</span><span class="token punctuation">(</span><span class="token class-name">RedisSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> innerSerializer<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="8"></td><td><pre>            <span class="token keyword">this</span><span class="token punctuation">.</span>innerSerializer <span class="token operator">=</span> innerSerializer<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="9"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="10"></td><td><pre></pre></td></tr><tr><td data-num="11"></td><td><pre>        <span class="token annotation punctuation">@Override</span></pre></td></tr><tr><td data-num="12"></td><td><pre>        <span class="token keyword">public</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">serialize</span><span class="token punctuation">(</span><span class="token class-name">Object</span> graph<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SerializationException</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="13"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>graph <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="14"></td><td><pre>                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="15"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="16"></td><td><pre>            <span class="token class-name">ByteArrayOutputStream</span> bos <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="17"></td><td><pre>            <span class="token class-name">GZIPOutputStream</span> gzip <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="18"></td><td><pre>            <span class="token keyword">try</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="19"></td><td><pre>                <span class="token comment">// 先序列化</span></pre></td></tr><tr><td data-num="20"></td><td><pre>                <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bytes <span class="token operator">=</span> innerSerializer<span class="token punctuation">.</span><span class="token function">serialize</span><span class="token punctuation">(</span>graph<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="21"></td><td><pre>                bos <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="22"></td><td><pre>                gzip <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GZIPOutputStream</span><span class="token punctuation">(</span>bos<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="23"></td><td><pre>                <span class="token comment">// 在压缩</span></pre></td></tr><tr><td data-num="24"></td><td><pre>                gzip<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="25"></td><td><pre>                gzip<span class="token punctuation">.</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="26"></td><td><pre>                <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> result <span class="token operator">=</span> bos<span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="27"></td><td><pre>                <span class="token keyword">return</span> result<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="28"></td><td><pre>            <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="29"></td><td><pre>                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">SerializationException</span><span class="token punctuation">(</span><span class="token string">"Gzip Serialization Error"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="30"></td><td><pre>            <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="31"></td><td><pre>                <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">closeQuietly</span><span class="token punctuation">(</span>bos<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="32"></td><td><pre>                <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">closeQuietly</span><span class="token punctuation">(</span>gzip<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="33"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="34"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="35"></td><td><pre></pre></td></tr><tr><td data-num="36"></td><td><pre>        <span class="token annotation punctuation">@Override</span></pre></td></tr><tr><td data-num="37"></td><td><pre>        <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">deserialize</span><span class="token punctuation">(</span><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bytes<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SerializationException</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="38"></td><td><pre></pre></td></tr><tr><td data-num="39"></td><td><pre>            <span class="token keyword">if</span> <span class="token punctuation">(</span>bytes <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> bytes<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="40"></td><td><pre>                <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="41"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="42"></td><td><pre></pre></td></tr><tr><td data-num="43"></td><td><pre>            <span class="token class-name">ByteArrayOutputStream</span> bos <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="44"></td><td><pre>            <span class="token class-name">ByteArrayInputStream</span> bis <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="45"></td><td><pre>            <span class="token class-name">GZIPInputStream</span> gzip <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="46"></td><td><pre>            <span class="token keyword">try</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="47"></td><td><pre>                bos <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="48"></td><td><pre>                bis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayInputStream</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="49"></td><td><pre>                gzip <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GZIPInputStream</span><span class="token punctuation">(</span>bis<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="50"></td><td><pre>                <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> buff <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token constant">BUFFER_SIZE</span><span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="51"></td><td><pre>                <span class="token keyword">int</span> n<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="52"></td><td><pre>                <span class="token comment">// 先解压</span></pre></td></tr><tr><td data-num="53"></td><td><pre>                <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> gzip<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buff<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">BUFFER_SIZE</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="54"></td><td><pre>                    bos<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buff<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="55"></td><td><pre>                <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="56"></td><td><pre>                <span class="token comment">// 再反序列化</span></pre></td></tr><tr><td data-num="57"></td><td><pre>                <span class="token class-name">Object</span> result <span class="token operator">=</span> innerSerializer<span class="token punctuation">.</span><span class="token function">deserialize</span><span class="token punctuation">(</span>bos<span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="58"></td><td><pre>                <span class="token keyword">return</span> result<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="59"></td><td><pre>            <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="60"></td><td><pre>                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">SerializationException</span><span class="token punctuation">(</span><span class="token string">"Gzip deserizelie error"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="61"></td><td><pre>            <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="62"></td><td><pre>                <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">closeQuietly</span><span class="token punctuation">(</span>bos<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="63"></td><td><pre>                <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">closeQuietly</span><span class="token punctuation">(</span>bis<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="64"></td><td><pre>                <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">closeQuietly</span><span class="token punctuation">(</span>gzip<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="65"></td><td><pre>            <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="66"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="67"></td><td><pre>    <span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>然后通过将这个序列化器注入到 RedisCacheManager 中即可实现压缩功能。</p>
+<h3 id="more"><a class="anchor" href="#more">#</a> MORE</h3>
+<p>GZIP 能取得不错的压缩比，但是对 CPU 要求较高，相当于把 Redis 的存储瓶颈转移到了 Java 程序的压缩 / 解压缩上。<br />
+那么是否有一个性能和压缩比兼得的压缩方案呢？</p>
+<h4 id="更具性价比压缩方式"><a class="anchor" href="#更具性价比压缩方式">#</a> 更具性价比压缩方式</h4>
+<p>从网络中能找到不通压缩方式的性能对比：<br />
+压缩后的大小：<br />
+<img data-src="/source/_data/images/image/compress-file-size.jpg" alt="compress-file-size.jpg" title="compress-file-size.jpg" /><br />
+ 压缩比：<br />
+<img data-src="/source/_data/images/image/compress-ratio.jpg" alt="compress-ratio.jpg" title="compress-ratio.jpg" /><br />
+ 压缩耗时：<br />
+<img data-src="/source/_data/images/image/compress-time.jpg" alt="compress-time.jpg" title="compress-time.jpg" /><br />
+ 解压缩耗时：<br />
+<img data-src="/source/_data/images/image/decompress-time.jpg" alt="decompress-time.jpg" title="decompress-time.jpg" /></p>
+<p>可以根据不通的压缩方式的性能及实现难度自主进行选择。</p>
+<h4 id="更好的序列化方案"><a class="anchor" href="#更好的序列化方案">#</a> 更好的序列化方案</h4>
+<p>前文提到我们使用的序列化是基于 Json 的，那么还有没有更好的序列化方案，能够拥有更好的性能及占用更低的内存。<br />
+答案是有，而且有很多，因为序列化方式在各种 RPC 方案中也是比较重要的一环，可以从网络上搜索到各种实现方式及性能对比。<br />
+我这次使用的是 kryo。</p>
+<div class="note warning">
+<p>kryo 针对不同的类型会有不同的序列化器，详情可以看 kryo 在 GitHub 上<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vzb3RlcmljU29mdHdhcmUva3J5bw==">介绍</span></p>
+</div>
+<div class="note warning">
+<p>kryo 是线程不安全的，可以使用 ThreadLocal 或使用对象池的方式来进行优化。本文使用的是对象池的方式。</p>
+</div>
+<p>实现如下：<br />
+首先引入依赖：</p>
+<figure class="highlight xml"><figcaption data-lang="XML"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span></pre></td></tr><tr><td data-num="2"></td><td><pre>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.esotericsoftware<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span></pre></td></tr><tr><td data-num="3"></td><td><pre>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>kryo<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span></pre></td></tr><tr><td data-num="4"></td><td><pre><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span></pre></td></tr></table></figure><p>序列化代码如下：</p>
+<figure class="highlight java"><figcaption data-lang="java"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token annotation punctuation">@Slf4j</span></pre></td></tr><tr><td data-num="2"></td><td><pre><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">KryoRedisSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span></span> <span class="token keyword">implements</span> <span class="token class-name">RedisSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="3"></td><td><pre></pre></td></tr><tr><td data-num="4"></td><td><pre>    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token constant">EMPTY_BYTE_ARRAY</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="5"></td><td><pre>    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Pool</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Kryo</span><span class="token punctuation">></span></span> kryoPool <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Pool</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="6"></td><td><pre>        <span class="token annotation punctuation">@Override</span></pre></td></tr><tr><td data-num="7"></td><td><pre>        <span class="token keyword">protected</span> <span class="token class-name">Kryo</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="8"></td><td><pre>            <span class="token class-name">Kryo</span> kryo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Kryo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="9"></td><td><pre>            kryo<span class="token punctuation">.</span><span class="token function">setReferences</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="10"></td><td><pre>            kryo<span class="token punctuation">.</span><span class="token function">setRegistrationRequired</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="11"></td><td><pre>            kryo<span class="token punctuation">.</span><span class="token function">setClassLoader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="12"></td><td><pre>            <span class="token keyword">return</span> kryo<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="13"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="14"></td><td><pre>    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="15"></td><td><pre></pre></td></tr><tr><td data-num="16"></td><td><pre></pre></td></tr><tr><td data-num="17"></td><td><pre>    <span class="token annotation punctuation">@Override</span></pre></td></tr><tr><td data-num="18"></td><td><pre>    <span class="token keyword">public</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">serialize</span><span class="token punctuation">(</span><span class="token class-name">T</span> t<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SerializationException</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="19"></td><td><pre>        <span class="token keyword">if</span> <span class="token punctuation">(</span>t <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="20"></td><td><pre>            <span class="token keyword">return</span> <span class="token constant">EMPTY_BYTE_ARRAY</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="21"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="22"></td><td><pre>        <span class="token class-name">Kryo</span> kryo <span class="token operator">=</span> kryoPool<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="23"></td><td><pre></pre></td></tr><tr><td data-num="24"></td><td><pre></pre></td></tr><tr><td data-num="25"></td><td><pre>        <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">ByteArrayOutputStream</span> baos <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="26"></td><td><pre>        <span class="token class-name">Output</span> output <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Output</span><span class="token punctuation">(</span>baos<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="27"></td><td><pre>            kryo<span class="token punctuation">.</span><span class="token function">writeClassAndObject</span><span class="token punctuation">(</span>output<span class="token punctuation">,</span> t<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="28"></td><td><pre>            output<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="29"></td><td><pre>            <span class="token keyword">return</span> baos<span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="30"></td><td><pre>        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="31"></td><td><pre>            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"error:"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="32"></td><td><pre>        <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="33"></td><td><pre>            kryoPool<span class="token punctuation">.</span><span class="token function">free</span><span class="token punctuation">(</span>kryo<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="34"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="35"></td><td><pre></pre></td></tr><tr><td data-num="36"></td><td><pre>        <span class="token keyword">return</span> <span class="token constant">EMPTY_BYTE_ARRAY</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="37"></td><td><pre>    <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="38"></td><td><pre></pre></td></tr><tr><td data-num="39"></td><td><pre>    <span class="token annotation punctuation">@Override</span></pre></td></tr><tr><td data-num="40"></td><td><pre>    <span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">deserialize</span><span class="token punctuation">(</span><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bytes<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">SerializationException</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="41"></td><td><pre>        <span class="token keyword">if</span> <span class="token punctuation">(</span>bytes <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> bytes<span class="token punctuation">.</span>length <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="42"></td><td><pre>            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="43"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="44"></td><td><pre></pre></td></tr><tr><td data-num="45"></td><td><pre>        <span class="token class-name">Kryo</span> kryo <span class="token operator">=</span> kryoPool<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="46"></td><td><pre>        kryo<span class="token punctuation">.</span><span class="token function">setReferences</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="47"></td><td><pre>        kryo<span class="token punctuation">.</span><span class="token function">setRegistrationRequired</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="48"></td><td><pre></pre></td></tr><tr><td data-num="49"></td><td><pre>        <span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">Input</span> input <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Input</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="50"></td><td><pre>            <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> kryo<span class="token punctuation">.</span><span class="token function">readClassAndObject</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="51"></td><td><pre>        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="52"></td><td><pre>            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"error:"</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="53"></td><td><pre>        <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="54"></td><td><pre>            kryoPool<span class="token punctuation">.</span><span class="token function">free</span><span class="token punctuation">(</span>kryo<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="55"></td><td><pre>        <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="56"></td><td><pre></pre></td></tr><tr><td data-num="57"></td><td><pre>        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="58"></td><td><pre>    <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="59"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>可以与之前 json/GZIP 等方式相结合，通过注册多个 CacheManager 的方式，来实现不同的方法或类 使用不同的序列化方式。</p>
+<p>实测 使用 Kryo 序列化方式后 32MB 的内存占用降低至 12MB 反序列化速度由 2s 降低至 600ms。</p>
+
+      <div class="tags">
+          <a href="/tags/JAVA/" rel="tag"><i class="ic i-tag"></i> JAVA</a>
+          <a href="/tags/Kryo/" rel="tag"><i class="ic i-tag"></i> Kryo</a>
+          <a href="/tags/Redis/" rel="tag"><i class="ic i-tag"></i> Redis</a>
+          <a href="/tags/Cache/" rel="tag"><i class="ic i-tag"></i> Cache</a>
+          <a href="/tags/Spring-Boot/" rel="tag"><i class="ic i-tag"></i> Spring Boot</a>
+          <a href="/tags/Serializer/" rel="tag"><i class="ic i-tag"></i> Serializer</a>
+          <a href="/tags/bigkey/" rel="tag"><i class="ic i-tag"></i> bigkey</a>
+      </div>
+  </div>
+
+   <footer>
+
+    <div class="meta">
+  <span class="item">
+    <span class="icon">
+      <i class="ic i-calendar-check"></i>
+    </span>
+    <span class="text">更新于</span>
+    <time title="修改时间：2023-03-16 16:10:44" itemprop="dateModified" datetime="2023-03-16T16:10:44+08:00">2023-03-16</time>
+  </span>
+  <span id="性能优化/SpringBoot下使用Kryo作为Redis的序列化工具/" class="item leancloud_visitors" data-flag-title="SpringBoot下使用Kryo作为Redis的序列化工具" title="阅读次数">
+      <span class="icon">
+        <i class="ic i-eye"></i>
+      </span>
+      <span class="text">阅读次数</span>
+      <span class="leancloud-visitors-count"></span>
+      <span class="text">次</span>
+  </span>
+</div>
+
+      
+<div class="reward">
+  <button><i class="ic i-heartbeat"></i> 赞赏</button>
+  <p>请我喝[茶]~(￣▽￣)~*</p>
+  <div id="qr">
+      
+      <div>
+        <img data-src="/images/wechatpay.png" alt="zlz-cn 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div>
+        <img data-src="/images/alipay.png" alt="zlz-cn 支付宝">
+        <p>支付宝</p>
+      </div>
+  </div>
+</div>
+
+      
+
+<div id="copyright">
+<ul>
+  <li class="author">
+    <strong>本文作者： </strong>zlz-cn <i class="ic i-at"><em>@</em></i>WeaklingCoder's Blog
+  </li>
+  <li class="link">
+    <strong>本文链接：</strong>
+    <a href="https://zlz-cn.github.io/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/SpringBoot%E4%B8%8B%E4%BD%BF%E7%94%A8Kryo%E4%BD%9C%E4%B8%BARedis%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/" title="SpringBoot下使用Kryo作为Redis的序列化工具">https://zlz-cn.github.io/性能优化/SpringBoot下使用Kryo作为Redis的序列化工具/</a>
+  </li>
+  <li class="license">
+    <strong>版权声明： </strong>本站所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="ic i-creative-commons"><em>(CC)</em></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+  </footer>
+
+</article>
+
+  </div>
+  
+
+<div class="post-nav">
+    <div class="item left">
+      
+
+  <a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" itemprop="url" rel="prev" data-background-image="https:&#x2F;&#x2F;tuapi.eees.cc&#x2F;api.php?category&#x3D;dongman&amp;type&#x3D;302&amp;?441194" title="给定行和列的和求可行矩阵">
+  <span class="type">上一篇</span>
+  <span class="category"><i class="ic i-flag"></i> LeetCode每日一题</span>
+  <h3>给定行和列的和求可行矩阵</h3>
+  </a>
+
+    </div>
+    <div class="item right">
+    </div>
+</div>
+
+  
+  <div class="wrap" id="comments"></div>
+
+
+        </div>
+        <div id="sidebar">
+          
+
+<div class="inner">
+
+  <div class="panels">
+    <div class="inner">
+      <div class="contents panel pjax" data-title="文章目录">
+          <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text"> 环境信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%8F%E5%B0%91value%E5%A4%A7%E5%B0%8F"><span class="toc-number">2.</span> <span class="toc-text"> 减少 value 大小</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8gzip%E7%AD%89%E5%8E%8B%E7%BC%A9%E5%B7%A5%E5%85%B7%E7%9B%B4%E6%8E%A5%E5%AF%B9value%E5%80%BC%E8%BF%9B%E8%A1%8C%E5%8E%8B%E7%BC%A9"><span class="toc-number">2.1.</span> <span class="toc-text"> 使用 GZIP 等压缩工具直接对 value 值进行压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#more"><span class="toc-number">2.2.</span> <span class="toc-text"> MORE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E5%85%B7%E6%80%A7%E4%BB%B7%E6%AF%94%E5%8E%8B%E7%BC%A9%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.1.</span> <span class="toc-text"> 更具性价比压缩方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E5%A5%BD%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%96%B9%E6%A1%88"><span class="toc-number">2.2.2.</span> <span class="toc-text"> 更好的序列化方案</span></a></li></ol></li></ol></li></ol>
+      </div>
+      <div class="related panel pjax" data-title="系列文章">
+        <ul>
+          <li class="active"><a href="/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/SpringBoot%E4%B8%8B%E4%BD%BF%E7%94%A8Kryo%E4%BD%9C%E4%B8%BARedis%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/" rel="bookmark" title="SpringBoot下使用Kryo作为Redis的序列化工具">SpringBoot下使用Kryo作为Redis的序列化工具</a></li>
+        </ul>
+      </div>
+      <div class="overview panel" data-title="站点概览">
+        <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="image" itemprop="image" alt="zlz-cn"
+      data-src="/images/avatar.jpg">
+  <p class="name" itemprop="name">zlz-cn</p>
+  <div class="description" itemprop="description">一个火鸡程序员的博客</div>
+</div>
+
+<nav class="state">
+    <div class="item posts">
+      <a href="/archives/">
+        <span class="count">5</span>
+        <span class="name">文章</span>
+      </a>
+    </div>
+    <div class="item categories">
+      <a href="/categories/">
+        <span class="count">2</span>
+        <span class="name">分类</span>
+      </a>
+    </div>
+    <div class="item tags">
+      <a href="/tags/">
+        <span class="count">14</span>
+        <span class="name">标签</span>
+      </a>
+    </div>
+</nav>
+
+<div class="social">
+      <span class="exturl item github" data-url="aHR0cHM6Ly9naXRodWIuY29tL3psei1jbg==" title="https:&#x2F;&#x2F;github.com&#x2F;zlz-cn"><i class="ic i-github"></i></span>
+      <span class="exturl item email" data-url="bWFpbHRvOnpoYW5nbGlhbnpodWFuZ0BvdXRsb29rLmNvbQ==" title="mailto:zhanglianzhuang@outlook.com"><i class="ic i-envelope"></i></span>
+</div>
+
+<ul class="menu">
+  
+    
+  <li class="item">
+    <a href="/" rel="section"><i class="ic i-home"></i>首页</a>
+  </li>
+
+    
+  <li class="item">
+    <a href="/about/" rel="section"><i class="ic i-user"></i>关于</a>
+  </li>
+
+        
+  <li class="item dropdown">
+      <a href="javascript:void(0);"><i class="ic i-feather"></i>文章</a>
+    <ul class="submenu">
+
+        
+  <li class="item">
+    <a href="/archives/" rel="section"><i class="ic i-list-alt"></i>归档</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/categories/" rel="section"><i class="ic i-th"></i>分类</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/tags/" rel="section"><i class="ic i-tags"></i>标签</a>
+  </li>
+
+  </ul>
+
+</ul>
+
+      </div>
+    </div>
+  </div>
+
+  <ul id="quick">
+    <li class="prev pjax">
+    </li>
+    <li class="up"><i class="ic i-arrow-up"></i></li>
+    <li class="down"><i class="ic i-arrow-down"></i></li>
+    <li class="next pjax">
+    </li>
+    <li class="percent"></li>
+  </ul>
+</div>
+
+
+        </div>
+        <div class="dimmer"></div>
+      </div>
+    </main>
+    <footer id="footer">
+      <div class="inner">
+        <div class="widgets">
+          
+<div class="rpost pjax">
+  <h2>随机文章</h2>
+  <ul>
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+</div>
+
+    <span><a href="/hello-world/" title="Hello World">Hello World</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E7%BB%99%E5%AE%9A%E8%A1%8C%E5%92%8C%E5%88%97%E7%9A%84%E5%92%8C%E6%B1%82%E5%8F%AF%E8%A1%8C%E7%9F%A9%E9%98%B5/" title="给定行和列的和求可行矩阵">给定行和列的和求可行矩阵</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E5%AD%97%E6%AF%8D%E4%B8%8E%E6%95%B0%E5%AD%97/" title="字母与数字">字母与数字</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="分类于 LeetCode每日一题">LeetCode每日一题</a>
+</div>
+
+    <span><a href="/LeetCode%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/%E8%B5%A2%E5%BE%97%E6%AF%94%E8%B5%9B%E9%9C%80%E8%A6%81%E7%9A%84%E6%9C%80%E5%B0%91%E8%AE%AD%E7%BB%83%E6%97%B6%E9%95%BF/" title="赢得比赛需要的最少训练时长">赢得比赛需要的最少训练时长</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="分类于 性能优化">性能优化</a>
+</div>
+
+    <span><a href="/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/SpringBoot%E4%B8%8B%E4%BD%BF%E7%94%A8Kryo%E4%BD%9C%E4%B8%BARedis%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7/" title="SpringBoot下使用Kryo作为Redis的序列化工具">SpringBoot下使用Kryo作为Redis的序列化工具</a></span>
+  </li>
+
+  </ul>
+</div>
+<div>
+  <h2>最新评论</h2>
+  <ul class="leancloud-recent-comment"></ul>
+</div>
+
+        </div>
+        <div class="status">
+  <div class="copyright">
+    
+    &copy; 2010 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="ic i-sakura rotate"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">zlz-cn @ ZZZ(●'◡'●)ZZZ</span>
+  </div>
+  <div class="count">
+    <span class="post-meta-item-icon">
+      <i class="ic i-chart-area"></i>
+    </span>
+    <span title="站点总字数">9k 字</span>
+
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="ic i-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9 分钟</span>
+  </div>
+  <div class="powered-by">
+    基于 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & Theme.<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FtZWhpbWUvaGV4by10aGVtZS1zaG9rYQ==">Shoka</span>
+  </div>
+</div>
+
+      </div>
+    </footer>
+  </div>
+<script data-config type="text/javascript">
+  var LOCAL = {
+    path: '性能优化/SpringBoot下使用Kryo作为Redis的序列化工具/',
+    favicon: {
+      show: "WeaklingCoder's Blog",
+      hide: "WeaklingCoder's Blog"
+    },
+    search : {
+      placeholder: "文章搜索",
+      empty: "关于 「 ${query} 」，什么也没搜到",
+      stats: "${time} ms 内找到 ${hits} 条结果"
+    },
+    valine: true,fancybox: true,
+    copyright: '复制成功，转载请遵守 <i class="ic i-creative-commons"></i>BY-NC-SA 协议。',
+    ignores : [
+      function(uri) {
+        return uri.includes('#');
+      },
+      function(uri) {
+        return new RegExp(LOCAL.path+"$").test(uri);
+      }
+    ]
+  };
+</script>
+
+<script src="https://cdn.polyfill.io/v2/polyfill.js"></script>
+
+<script src="//cdn.jsdelivr.net/combine/npm/pace-js@1.0.2/pace.min.js,npm/pjax@0.2.8/pjax.min.js,npm/whatwg-fetch@3.4.0/dist/fetch.umd.min.js,npm/animejs@3.2.0/lib/anime.min.js,npm/algoliasearch@4/dist/algoliasearch-lite.umd.js,npm/instantsearch.js@4/dist/instantsearch.production.min.js,npm/lozad@1/dist/lozad.min.js,npm/quicklink@2/dist/quicklink.umd.js"></script>
+
+<script src="/js/app.js?v=0.2.5"></script>
+
+
+
+
+</body>
+</html>
